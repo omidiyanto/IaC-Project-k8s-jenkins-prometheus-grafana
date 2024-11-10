@@ -110,9 +110,23 @@
 
 	Create Secret and Token for ServiceAccount
 	```bash
-	kubectl -n default create secret generic kubeconfig-cluster-admin-token \
-	--from-literal=token="$(kubectl -n default get serviceaccount omidiyanto -o=jsonpath='{.secrets[0].name}')" \
-	--dry-run=client -o yaml | kubectl apply -f -
+	vim token-secret-admin.yml
+	```
+	Fill with this configuration:
+	```
+	apiVersion: v1
+	kind: Secret
+	metadata:
+	name: kubeconfig-cluster-admin-token
+	namespace: default
+	annotations:
+		kubernetes.io/service-account.name: omidiyanto
+	type: kubernetes.io/service-account-token
+	```
+	
+	Apply the manifest
+	```bash
+	kubectl apply -f token-secret-admin.yml
 	```
 
 	Get the Token

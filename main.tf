@@ -111,7 +111,6 @@ resource "proxmox_vm_qemu" "k8s-workers" {
 }
 
 resource "proxmox_vm_qemu" "jenkins-server" {
-  depends_on = [ proxmox_vm_qemu.k8s-master,proxmox_vm_qemu.k8s-workers ]
   name        = "jenkins-server"
   target_node = "proxmox"
   vmid        = 303
@@ -163,7 +162,6 @@ resource "proxmox_vm_qemu" "jenkins-server" {
 }
 
 resource "proxmox_vm_qemu" "monitoring-server" {
-  depends_on = [ proxmox_vm_qemu.k8s-master,proxmox_vm_qemu.k8s-workers ]
   name        = "monitoring-server"
   target_node = "proxmox"
   vmid        = 304

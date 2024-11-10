@@ -20,7 +20,7 @@ resource "proxmox_vm_qemu" "k8s-master" {
 
   agent      = 1
   cores      = 4
-  memory     = 4096
+  memory     = 8192
   os_type    = "cloud-init"
   bootdisk   = "scsi0"
   scsihw     = "virtio-scsi-pci"
@@ -280,6 +280,6 @@ resource "null_resource" "create_monitoring_server" {
 resource "null_resource" "create_jenkins_server" {
     depends_on = [null_resource.create_monitoring_server]
     provisioner "local-exec" {
-        command = "sleep 10;ansible-playbook -i ./inventory.ini playbook-create-jenkins-server.yml -u ${var.ci_user}"
+        command = "sleep 10;ansible-playbook -i ./inventory.ini playbook-jenkins-server.yml -u ${var.ci_user}"
     }
 }

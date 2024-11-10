@@ -3,7 +3,6 @@
 	<h1> 🌟 Infrastructre as Code (IaC) Project🚀 </h1>
 </div>
 <div align="center">
-    <!-- Your badges here -->
     <img src="https://img.shields.io/badge/kubernetes-blue?style=for-the-badge&logo=kubernetes&logoColor=white">
 	<img src="https://img.shields.io/badge/docker-white.svg?style=for-the-badge&logo=docker&logoColor=blue">
 	<img src="https://img.shields.io/badge/helm chart-navy?style=for-the-badge&logo=helm&logoColor=white">
@@ -13,8 +12,7 @@
     <img src="https://img.shields.io/badge/ansible-%23000.svg?style=for-the-badge&logo=ansible&logoColor=white">
 	<img src="https://img.shields.io/badge/jenkins-maroon.svg?style=for-the-badge&logo=jenkins&logoColor=white">
     <img src="https://img.shields.io/badge/proxmox-%23FF6F00.svg?style=for-the-badge&logo=proxmox&logoColor=white">
-    <img src="https://img.shields.io/badge/ubuntu-%23D00000.svg?style=for-the-badge&logo=ubuntu&logoColor=white"
-	
+    <img src="https://img.shields.io/badge/ubuntu-%23D00000.svg?style=for-the-badge&logo=ubuntu&logoColor=white">
 </div>
 <br>
 

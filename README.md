@@ -7,6 +7,8 @@
     <img src="https://img.shields.io/badge/ansible-%23000.svg?style=for-the-badge&logo=ansible&logoColor=white">
     <img src="https://img.shields.io/badge/proxmox-%23FF6F00.svg?style=for-the-badge&logo=proxmox&logoColor=white">
     <img src="https://img.shields.io/badge/ubuntu-%23D00000.svg?style=for-the-badge&logo=ubuntu&logoColor=white">
+	<img src="https://img.shields.io/badge/jenkins-maroon.svg?style=for-the-badge&logo=jenkins&logoColor=white">
+	<img src="https://img.shields.io/badge/sonarqube-white.svg?style=for-the-badge&logo=sonarqube&logoColor=black">
 </div>
 <br>
 

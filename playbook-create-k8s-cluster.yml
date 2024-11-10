@@ -1,6 +1,8 @@
 ---
 - name: Setup K8s Cluster
-  hosts: all
+  hosts:
+  - master-node
+  - worker-node
   become: yes
   tasks:
   - name: Load Kernel Modules

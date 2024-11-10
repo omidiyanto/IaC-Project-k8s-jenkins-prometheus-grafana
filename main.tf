@@ -113,7 +113,7 @@ resource "proxmox_vm_qemu" "k8s-workers" {
 resource "proxmox_vm_qemu" "jenkins-server" {
   name        = "jenkins-server"
   target_node = "proxmox"
-  vmid        = 700
+  vmid        = 303
   clone       = "ubuntu-template"
   full_clone  = true
 
@@ -164,7 +164,7 @@ resource "proxmox_vm_qemu" "jenkins-server" {
 resource "proxmox_vm_qemu" "monitoring-server" {
   name        = "monitoring-server"
   target_node = "proxmox"
-  vmid        = 800
+  vmid        = 304
   clone       = "ubuntu-template"
   full_clone  = true
 

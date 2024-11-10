@@ -1,0 +1,194 @@
+---
+- name: Installing Prometheus
+  hosts: monitoring-server
+  become: true
+  vars:
+    version: "2.55.0"
+  tasks:
+  - name: Check if Prometheus tarball is already downloaded
+    stat:
+      path: "/tmp/prometheus-{{ version }}.linux-amd64.tar.gz"
+    register: prometheus_tarball
+
+  - name: Check if Prometheus Directory is exists
+    stat:
+      path: "/etc/prometheus"
+    register: prometheus_dir
+
+  - name: Download Prometheus Archive file
+    get_url:
+      url: "https://github.com/prometheus/prometheus/releases/download/v{{ version
+        }}/prometheus-{{ version }}.linux-amd64.tar.gz"
+      dest: "/tmp/prometheus-{{ version }}.linux-amd64.tar.gz"
+    when: not prometheus_tarball.stat.exists
+
+  - name: Extract Prometheus tarball
+    shell: "tar -xvzf /tmp/prometheus-{{ version }}.linux-amd64.tar.gz -C /etc/"
+    when: not prometheus_dir.stat.exists
+
+  - name: Rename Directory
+    shell: "mv /etc/prometheus-{{ version }}.linux-amd64 /etc/prometheus"
+    when: not prometheus_dir.stat.exists
+
+  - name: Move prometheus and promtool to /usr/bin
+    shell: |
+      cp /etc/prometheus/prometheus /usr/bin/
+      cp /etc/prometheus/promtool /usr/bin/
+      rm -rf /etc/prometheus/prometheus
+      rm -rf /etc/prometheus/prometool
+    when: not prometheus_dir.stat.exists
+
+  - name: Create Prometheus data directory
+    file:
+      path: "/var/lib/prometheus"
+      state: directory
+      mode: '0755'
+    when: not prometheus_dir.stat.exists
+
+  - name: Create Prometheus service file
+    copy:
+      dest: "/etc/systemd/system/prometheus-server.service"
+      content: |
+        [Unit]
+        Description=Prometheus
+
+        [Service]
+        User=root
+        ExecStart=/usr/bin/prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path /var/lib/prometheus/ --web.console.templates=/etc/prometheus/consoles --web.console.libraries=/etc/prometheus/console_libraries --web.external-url=http://0.0.0.0:9090/
+
+        [Install]
+        WantedBy=default.target
+
+  - name: Reload systemd manager configuration
+    systemd:
+      daemon_reload: yes
+
+  - name: Enable and start Prometheus service
+    systemd:
+      name: "prometheus-server.service"
+      enabled: yes
+      state: started
+
+  - name: Check Prometheus service status
+    systemd:
+      name: "prometheus-server.service"
+      state: started
+
+- name: Installing Grafana
+  hosts: monitoring-server
+  become: true
+  vars:
+    version: "11.3.0"
+  tasks:
+  - name: Check if Grafana tarball is already downloaded
+    stat:
+      path: "/tmp/grafana-{{ version }}.linux-amd64.tar.gz"
+    register: grafana_tarball
+
+  - name: Check if Grafana Directory is exists
+    stat:
+      path: "/usr/share/grafana"
+    register: grafana_dir
+
+  - name: Download Grafana Archive file
+    get_url:
+      url: "https://dl.grafana.com/oss/release/grafana-{{ version
+        }}.linux-amd64.tar.gz"
+      dest: "/tmp/grafana-{{ version }}.linux-amd64.tar.gz"
+    when: not grafana_tarball.stat.exists
+
+  - name: Extract Grafana tarball
+    shell: "tar -xvzf /tmp/grafana-{{ version }}.linux-amd64.tar.gz -C /usr/share"
+    when: not grafana_dir.stat.exists
+
+  - name: Rename Directory
+    shell: "mv /usr/share/grafana-v{{ version }} /usr/share/grafana"
+    when: not grafana_dir.stat.exists
+
+  - name: Create Prometheus service file
+    copy:
+      dest: "/etc/systemd/system/grafana-server.service"
+      content: |
+        [Unit]
+        Description=Grafana instance
+
+        [Service]
+        ExecStart=/usr/share/grafana/bin/grafana-server -homepath /usr/share/grafana web
+
+        [Install]
+        WantedBy=default.target
+
+  - name: Reload systemd manager configuration
+    systemd:
+      daemon_reload: yes
+
+  - name: Enable and start Grafana service
+    systemd:
+      name: "grafana-server.service"
+      enabled: yes
+      state: started
+
+  - name: Check Grafana service status
+    systemd:
+      name: "grafana-server.service"
+      state: started
+
+- name: Installing Node Exporter
+  hosts: monitoring-server
+  become: true
+  vars:
+    version: "1.8.2"
+  tasks:
+  - name: Check if Node Exporter tarball is already downloaded
+    stat:
+      path: "/tmp/node_exporter-{{ version }}.linux-amd64.tar.gz"
+    register: nodeexporter_tarball
+
+  - name: Check if Node Exporter Directory is exists
+    stat:
+      path: "/opt/node_exporter-{{ version }}.linux-amd64/node_exporter"
+    register: nodeexporter_dir
+
+  - name: Download Node Exporter Archive file
+    get_url:
+      url: "https://github.com/prometheus/node_exporter/releases/download/v{{ version
+        }}/node_exporter-{{ version }}.linux-amd64.tar.gz"
+      dest: "/tmp/node_exporter-{{ version }}.linux-amd64.tar.gz"
+    when: not nodeexporter_tarball.stat.exists
+
+  - name: Extract Node Exporter tarball
+    shell: "tar -xvzf /tmp/node_exporter-{{ version }}.linux-amd64.tar.gz -C /opt/"
+    when: not nodeexporter_dir.stat.exists
+
+  - name: Copy Node Exporter Binary file
+    shell: "cp /opt/node_exporter-{{ version }}.linux-amd64/node_exporter /usr/bin/"
+    when: not nodeexporter_dir.stat.exists
+
+  - name: Create Node Exporter service file
+    copy:
+      dest: "/etc/systemd/system/node_exporter.service"
+      content: |
+        [Unit]
+        Description=Node Exporter
+
+        [Service]
+        User=root
+        ExecStart=/usr/bin/node_exporter 
+
+        [Install]
+        WantedBy=default.target
+
+  - name: Reload systemd manager configuration
+    systemd:
+      daemon_reload: yes
+
+  - name: Enable and start Node Exporter service
+    systemd:
+      name: "node_exporter.service"
+      enabled: yes
+      state: started
+
+  - name: Check Node Exporter service status
+    systemd:
+      name: "node_exporter.service"
+      state: started

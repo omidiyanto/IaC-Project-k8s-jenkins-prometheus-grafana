@@ -91,12 +91,15 @@
 
   - name: Add user to docker group
     user:
-      name: "{{ item }}"
+      name: "{{ ansible_user }}"
       groups: docker
       append: yes
-    loop:
-    - "{{ ansible_user }}"
-    - "jenkins"
+
+  - name: Add jenkins user to docker group
+    user:
+      name: "jenkins"
+      groups: docker
+      append: yes
 
   - name: Enable and start Docker services
     systemd:

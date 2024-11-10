@@ -262,6 +262,40 @@ EOT
   filename = "./inventory.ini"
 }
 
+resource "null_resource" "update_hosts_file" {
+  depends_on = [
+    local_file.create_ansible_inventory
+  ]
+
+  provisioner "local-exec" {
+    command = <<EOT
+      # Membuat backup file hosts sebelum mengganti
+      cp /etc/hosts /etc/hosts.backup
+
+      # Mengganti atau menambah entri hostname dengan IP sesuai
+      echo "Updating /etc/hosts..."
+      
+      # Membersihkan entri lama terkait dengan k8s-master, k8s-worker, jenkins-server, monitoring-server
+      sed -i '/k8s-master/d' /etc/hosts
+      sed -i '/k8s-worker/d' /etc/hosts
+      sed -i '/jenkins-server/d' /etc/hosts
+      sed -i '/monitoring-server/d' /etc/hosts
+
+      # Menambahkan entri baru sesuai IP dan hostname
+      echo "${proxmox_vm_qemu.k8s-master.default_ipv4_address} k8s-master" >> /etc/hosts
+      i=1
+      for worker in ${join(" ", [for worker in proxmox_vm_qemu.k8s-workers : worker.default_ipv4_address])}; do
+        echo "$worker k8s-worker-$i" >> /etc/hosts
+        i=$((i + 1))
+      done
+      echo "${proxmox_vm_qemu.jenkins-server.default_ipv4_address} jenkins-server" >> /etc/hosts
+      echo "${proxmox_vm_qemu.monitoring-server.default_ipv4_address} monitoring-server" >> /etc/hosts
+
+      echo "Hosts file updated."
+    EOT
+  }
+}
+
 
 resource "null_resource" "create_k8s_cluster" {
     depends_on = [local_file.create_ansible_inventory]

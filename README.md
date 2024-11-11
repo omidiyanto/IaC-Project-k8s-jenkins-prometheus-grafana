@@ -75,7 +75,7 @@
 	```bash
 	ssh ci-user@k8s-master-IP-Address
 	git clone https://github.com/omidiyanto/IaC-Project-k8s-jenkins-prometheus-grafana.git
-	cd terraform-ansible-k3s-proxmox
+	cd IaC-Project-k8s-jenkins-prometheus-grafana
 	```
 	Install MetalLB by manifest
 	```bash
@@ -123,7 +123,7 @@
 		kubernetes.io/service-account.name: omidiyanto
 	type: kubernetes.io/service-account-token
 	```
-	
+
 	Apply the manifest
 	```bash
 	kubectl apply -f token-secret-admin.yml
@@ -206,3 +206,39 @@
 	<br>
 	- Add Connections for Prometheus
 	- Import Dashbord with ID "1860" and "9964"
+
+## Configure Jenkins Tools
+1. Install Plugins
+	- Eclipse Temurin
+	- SonarQube Scanner
+	- Docker
+	- Kubernetes
+	- NodeJS
+	- OWASP Dependency-Check
+	- Github integration
+
+2. Configure Jenkins Tools
+	- JDK --> jdk17 (Install from adoptium.net : jdk-17.0.8.1+1)
+	- Sonarqube Scanner --> sonar-scanner (Install Automatically : latest)
+	- NodeJS --> node6 (Install from nodejs.org : nodejs 16.2.0)
+	- Dependency-Check --> DP-Check (Install from github.com : latest)
+	- Docker --> docker (Install from docker.com : latest)
+
+3. Configure Jenkins Global System
+	- Add Sonarqube servers
+	- Configure E-Mail Notification
+	- Configure Extended E-Mail Notification
+
+4. Run Sonarqube with Docker on Jenkins-Server
+	```bash
+	docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
+	```
+
+5. Install Trivy
+	```bash
+	sudo apt-get install wget apt-transport-https gnupg lsb-release
+	wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+	echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+	sudo apt-get update
+	sudo apt-get install trivy        
+	```

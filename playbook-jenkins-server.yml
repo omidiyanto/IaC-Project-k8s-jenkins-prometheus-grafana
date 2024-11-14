@@ -50,3 +50,18 @@
     shell: |
       curl -L "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" -o /usr/bin/kubectl
       chmod a+x /usr/bin/kubectl
+
+  - name: Add the PPA repository for yq
+    apt_repository:
+        repo: ppa:rmescandon/yq
+        state: present
+        
+  - name: Remove stale lock files
+    shell: rm -rf /var/lib/apt/lists/lock;rm -rf /var/cache/apt/archives/lock;rm -rf
+      /var/lib/dpkg/lock*
+  
+  - name: Install yq
+    apt:
+        name: yq
+        state: present
+        update_cache: yes

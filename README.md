@@ -1,4 +1,3 @@
-
 <div align="center">
 	<h1> 🌟 Infrastructre as Code (IaC) Project🚀 </h1>
 </div>
@@ -15,6 +14,9 @@
     <img src="https://img.shields.io/badge/ubuntu-%23D00000.svg?style=for-the-badge&logo=ubuntu&logoColor=white">
 </div>
 <br>
+
+# System Architecture
+<img src="https://github.com/user-attachments/assets/54c1206f-12a1-487f-abf9-65dba12de438"></img>
 
 ### Steps
 

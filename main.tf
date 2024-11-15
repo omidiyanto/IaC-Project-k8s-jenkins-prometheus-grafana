@@ -295,23 +295,3 @@ resource "null_resource" "update_hosts_file" {
 }
 
 
-resource "null_resource" "create_k8s_cluster" {
-    depends_on = [local_file.create_ansible_inventory]
-    provisioner "local-exec" {
-        command = "sleep 60;ansible-playbook -i ./inventory.ini playbook-create-k8s-cluster.yml -u ${var.ci_user}"
-    }
-}
-
-resource "null_resource" "create_monitoring_server" {
-    depends_on = [null_resource.create_k8s_cluster]
-    provisioner "local-exec" {
-        command = "sleep 10;ansible-playbook -i ./inventory.ini playbook-prometheus-grafana.yml -u ${var.ci_user}"
-    }
-}
-
-resource "null_resource" "create_jenkins_server" {
-    depends_on = [null_resource.create_monitoring_server]
-    provisioner "local-exec" {
-        command = "sleep 10;ansible-playbook -i ./inventory.ini playbook-jenkins-server.yml -u ${var.ci_user}"
-    }
-}

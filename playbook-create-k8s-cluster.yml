@@ -5,6 +5,15 @@
   - worker-node
   become: yes
   tasks:
+  - name: Disable swap
+    command: swapoff -a
+
+  - name: Remove swap entry from /etc/fstab
+    lineinfile:
+      path: /etc/fstab
+      regexp: '^(?i)\S+\s+\S+\s+swap'  # Case-insensitive matching for "swap" in the third column
+      state: absent
+      
   - name: Load Kernel Modules
     copy:
       dest: /etc/modules-load.d/k8s.conf
